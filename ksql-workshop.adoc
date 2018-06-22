@@ -32,6 +32,8 @@ Don't forget to check out the #ksql channel on our https://slackpass.io/confluen
 * Docker
 * Docker Compose
 * 8GB+ RAM
+* Clone github repository (see below)
+* Pull required docker images (see below)
 
 IMPORTANT: *THIS MUST BE DONE _BEFORE_ THE WORKSHOP - The docker images are large and will take time to download. Please don't wait until the workshop as the wi-fi will not cope!*
 
@@ -45,7 +47,7 @@ IMPORTANT: *THIS MUST BE DONE _BEFORE_ THE WORKSHOP - The docker images are larg
 +
 [source,bash]
 ----
-git clone https://github.com/confluentinc/demo-scene.git
+git clone https://github.com/confluentinc/ksql-workshop.git
 ----
 
 0. Did you remember to increase the memory dedicated to Docker to at least 8GB?
