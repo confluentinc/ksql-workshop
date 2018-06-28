@@ -1,9 +1,13 @@
+= TODO
+
+* On Linux the network is `ksqlworkshop_default`
+
 = Workshop: Real-time SQL Stream Processing at Scale with Apache Kafka and KSQL
 :source-highlighter: pygments
 :doctype: book
 :sectnums:
 Robin Moffatt <@rmoff>
-v0.10, 19 Jun 2018
+v0.11, 28 Jun 2018
 
 :toc:
 
@@ -37,6 +41,8 @@ IMPORTANT: *THIS MUST BE DONE _BEFORE_ THE WORKSHOP - The docker images are larg
 
 [IMPORTANT]
 ====
+
+1. Install https://docs.docker.com/compose/install/[Docker Compose] on your system. There are Mac, Windows, and Linux options available at the link.
 
 0. In Docker’s advanced settings, increase the memory dedicated to Docker to at least 8GB.
 ** Don't forget to do this
@@ -135,16 +141,18 @@ Run the following command to send the customer data to the `customers` topic:
 
 [source,bash]
 ----
-cat data/customers.json | \
 docker run --interactive \
            --network ksql-workshop_default \
-           confluentinc/cp-kafkacat \
+           --volume $PWD/data:/data confluentinc/cp-kafkacat \
            kafkacat -b kafka:29092 \
                     -t customers \
-                    -P
+                    -P -l /data/customers.json
 ----
 
 Note that there is no output from this command. We will verify its success in the next step.
+
+_On Windows you may find that the above doesn't work. If so, run just the second part of the command (starting `docker run…`) and manually paste the contents of `data/customers.json doesn't have cat (for loading customer data)
+
 
 === Inspect customer data
 
