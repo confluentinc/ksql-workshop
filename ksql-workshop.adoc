@@ -1,7 +1,3 @@
-= TODO
-
-* On Linux the network is `ksqlworkshop_default`
-
 = Workshop: Real-time SQL Stream Processing at Scale with Apache Kafka and KSQL
 :source-highlighter: pygments
 :doctype: book
@@ -27,7 +23,7 @@ image::images/ksql_workshop_01.png[Diagram of what's being built with the KSQL d
 
 Don't forget to check out the #ksql channel on our https://slackpass.io/confluentcommunity[Community Slack group]
 
-——_Robin Moffatt https://twitter.com/rmoff/[@rmoff], 19 Jun 2018_
+——_Robin Moffatt https://twitter.com/rmoff/[@rmoff]_
 
 == Pre-requisites
 
@@ -130,6 +126,8 @@ docker run --network ksql-workshop_default \
 Note that the data is in Avro, so you will see lots of special characters in the output.
 
 Press Ctrl-C to cancel and return to the command prompt.
+
+NOTE: On Linux the name of the network is `ksqlworkshop_default` (no `-` between `ksql` and `workshop`).
 
 == Source Data : Customers
 
@@ -619,7 +617,44 @@ ksql> CREATE TABLE CUSTOMERS WITH (KAFKA_TOPIC='CUSTOMERS_SRC_REKEY', VALUE_FORM
 ksql>
 ----
 
-_n.b. if you get the error `Unable to verify the AVRO schema is compatible with KSQL` then retry the command after a second or two (ref. https://github.com/confluentinc/ksql/issues/1394[#1394])._
+[NOTE]
+====
+_n.b. if you get the error `Unable to verify the AVRO schema is compatible with KSQL` then_ :
+
+* Retry the command after a second or two (ref. https://github.com/confluentinc/ksql/issues/1394[#1394]).
+* Check that the topic's source stream is created:
++
+[source,sql]
+----
+ksql> SHOW STREAMS;
+ Stream Name         | Kafka Topic         | Format
+----------------------------------------------------
+ CUSTOMERS_SRC_REKEY | CUSTOMERS_SRC_REKEY | AVRO
+ [...]
+----
++
+* Verify that the source stream is processing messages by running `DESCRIBE EXTENDED CUSTOMERS_SRC_REKEY;`. Under the heading `Local runtime statistics` you should see:
++
+[source,sql]
+----
+Local runtime statistics
+------------------------
+messages-per-sec:      0.10   total-messages:        10     last-message: 6/28/18 6:23:54 PM UTC
+ failed-messages:         0 failed-messages-per-sec:         0      last-failed:       n/a
+----
++
+** If no 'messages-per-sec' is shown, the next step is to verify that you ran `SET 'auto.offset.reset' = 'earliest';` earlier. You can run it again to be certain. If it says `Successfully changed local property 'auto.offset.reset' from 'null' to 'earliest'` then the `null` shows that it wasn't previously set.
+** If this was the case, then you need to drop and recreate the stream in order to process the customer data:
++
+[source,sql]
+----
+TERMINATE QUERY CSAS_CUSTOMERS_SRC_REKEY_0;
+DROP STREAM CUSTOMERS_SRC_REKEY;
+----
++
+Then re-run the `CREATE STREAM CUSTOMERS_SRC_REKEY[…]` from above. Use `SHOW QUERIES;` to list the queries running if the name differs from that shown in the `TERMINATE` statement.
+====
+
 
 Query the table:
 
