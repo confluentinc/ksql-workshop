@@ -1,3 +1,3 @@
 # KSQL Workshop
 
-For instructions, see [ksql-workshop.adoc](ksql-workshop.adoc)
+This has moved to the [quickstart-demos](https://github.com/confluentinc/quickstart-demos) repository. 
